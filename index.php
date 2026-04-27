@@ -67,9 +67,12 @@ ob_end_flush();
 require_once('version.php');
 
 ?>
-<title>BOCA Online Contest Administrator <?php echo $BOCAVERSION; ?> - Login</title>
+<!DOCTYPE html>
+<html lang="es">
 <head>
+<title>BOCA Online Contest Administrator <?php echo $BOCAVERSION; ?> - Login</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel=stylesheet href="Css.php" type="text/css">
 <script language="JavaScript" src="sha256.js"></script>
 <script language="JavaScript">
@@ -119,44 +122,30 @@ if(function_exists("globalconf") && function_exists("sanitizeVariables")) {
 }
 ?>
 </head>
-<body onload="document.form1.name.focus()">
-<table width="100%" height="100%" border="0">
-  <tr align="center" valign="middle"> 
-    <td> 
+<body class="boca-login" onload="document.form1.name.focus()">
+<div class="boca-login-wrap">
       <form name="form1" action="javascript:computeHASH()">
-        <div align="center"> 
-          <table border="0" align="center">
-            <tr> 
-              <td nowrap>
-                <div align="center"><font face="Verdana, Arial, Helvetica, sans-serif" size="+1">
-				BOCA Login</font></div>
-              </td>
-            </tr>
-            <tr>
-              <td valign="top"> 
-                <table border="0" align="left">
+        <div class="boca-login-card">
+                <h1>BOCA Login</h1>
+                <p class="boca-login-sub">Online Contest Administrator</p>
+                <table border="0" align="center" cellpadding="0" cellspacing="0">
                   <tr> 
-                    <td><font face="Verdana, Arial, Helvetica, sans-serif" > 
-                      Name
-                      </font></td>
+                    <td><label for="boca-user">Name</label></td>
                     <td> 
-                      <input type="text" name="name">
+                      <input id="boca-user" type="text" name="name" autocomplete="username">
                     </td>
                   </tr>
                   <tr> 
-                    <td><font face="Verdana, Arial, Helvetica, sans-serif" >Password</font></td>
+                    <td><label for="boca-pass">Password</label></td>
                     <td> 
-                      <input type="password" name="password">
+                      <input id="boca-pass" type="password" name="password" autocomplete="current-password">
                     </td>
                   </tr>
                 </table>
+                <div class="boca-login-actions">
                 <input type="submit" name="Submit" value="Login">
-              </td>
-            </tr>
-          </table>
+                </div>
         </div>
       </form>
-    </td>
-  </tr>
-</table>
+</div>
 <?php include('footnote.php'); ?>

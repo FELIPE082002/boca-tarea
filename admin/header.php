@@ -57,16 +57,16 @@ if ((isset($_GET["Submit1"]) && $_GET["Submit1"] == "Transfer") ||
 }
 
 if(!isset($_POST['noflush'])) {
-	echo "</head><body id=\"body\"><table border=1 width=\"100%\">\n";
-	echo "<tr><td nowrap bgcolor=\"eeee00\" align=center>";
+	echo "</head><body id=\"body\"><table class=\"boca-banner boca-banner--admin\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+	echo "<tr><td nowrap align=center>";
 	echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
 	echo "<font color=\"#000000\">BOCA</font>";
-	echo "</td><td bgcolor=\"#eeee00\" width=\"99%\">\n";
+	echo "</td><td width=\"99%\">\n";
 	echo "Username: " . $_SESSION["usertable"]["username"] . " (site=".$_SESSION["usertable"]["usersitenumber"].")<br>\n";
 	list($clockstr,$clocktype)=siteclock();
-	echo "</td><td bgcolor=\"#eeee00\" align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
+	echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
 	echo "</table>\n";
-	echo "<table border=0 width=\"100%\" align=center>\n";
+	echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
 	echo " <tr>\n";
 	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=run.php>Runs</a></td>\n";
 	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=score.php>Score</a></td>\n";

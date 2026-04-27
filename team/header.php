@@ -46,11 +46,11 @@ if($_SESSION["usertable"]["usertype"] != "team") {
 }
 
 echo "<script language=\"javascript\" src=\"../reload.js\"></script>\n";
-echo "</head><body onload=\"Comecar()\" onunload=\"Parar()\"><table border=1 width=\"100%\">\n";
-echo "<tr><td nowrap bgcolor=\"#aaaaee\" align=center>";
+echo "</head><body onload=\"Comecar()\" onunload=\"Parar()\"><table class=\"boca-banner boca-banner--team\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr><td nowrap align=center>";
 echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
 echo "<font color=\"#000000\">BOCA</font>";
-echo "</td><td bgcolor=\"#aaaaee\" width=\"99%\">\n";
+echo "</td><td width=\"99%\">\n";
 echo "Username: " . $_SESSION["usertable"]["username"] . " (site=".$_SESSION["usertable"]["usersitenumber"].")\n";
 
 $ds = DIRECTORY_SEPARATOR;
@@ -129,9 +129,9 @@ if(!isset($_SESSION["popuptime"]) || $_SESSION["popuptime"] < time()-120) {
 }
 
 list($clockstr,$clocktype)=siteclock();
-echo "</td><td bgcolor=\"#aaaaee\" align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
+echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
 echo "</table>\n";
-echo "<table border=0 width=\"100%\" align=center>\n";
+echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
 echo " <tr>\n";
 echo "  <td align=center width=\"12%\"><a class=menu style=\"font-weight:bold\" href=problem.php>Problems</a></td>\n";
 echo "  <td align=center width=\"12%\"><a class=menu style=\"font-weight:bold\" href=run.php>Runs</a></td>\n";

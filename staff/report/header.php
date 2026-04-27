@@ -55,11 +55,11 @@ $site=$_SESSION["usertable"]["usersitenumber"];
 if(($st = DBSiteInfo($contest,$site)) == null)
         ForceLoad($loc."/index.php");
 
-echo "</head><body><table border=1 width=\"100%\">\n";
-echo "<tr><td bgcolor=\"eeee00\" nowrap align=center>";
+echo "</head><body><table class=\"boca-banner boca-banner--report\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr><td nowrap align=center>";
 echo "<img src=\"$loc/images/smallballoontransp.png\" alt=\"\">";
-echo "<font color=\"#ffffff\"><a href=\"http://www.ime.usp.br/~cassio/boca/\">BOCA</a></font>";
-echo "</td><td bgcolor=\"#eeee00\" width=\"99%\">\n";
+echo "<font color=\"#000000\"><a href=\"http://www.ime.usp.br/~cassio/boca/\">BOCA</a></font>";
+echo "</td><td width=\"99%\">\n";
 echo $ct["contestname"] . " - " . $st["sitename"] . "</td>\n";
 echo "</tr></table>\n";
 ?>

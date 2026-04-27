@@ -54,21 +54,17 @@ $isboss=false;
 if($s["sitechiefname"]== $_SESSION["usertable"]["username"] || strpos($_SESSION["usertable"]["username"],'chief')===true)
   $isboss=true;
 
-if($isboss)
-  $cc = "338833";
-else
-  $cc = "77cc77";
-
+$bannerClass = $isboss ? "boca-banner--judge-chief" : "boca-banner--judge";
 
 echo "<script language=\"javascript\" src=\"../reload.js\"></script>\n";
-echo "</head><body onload=\"Comecar()\" onunload=\"Parar()\"><table border=1 width=\"100%\">\n";
-echo "<tr><td nowrap bgcolor=\"#$cc\" align=center>";
+echo "</head><body onload=\"Comecar()\" onunload=\"Parar()\"><table class=\"boca-banner $bannerClass\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr><td nowrap align=center>";
 echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
 echo "<font color=\"#000000\">BOCA</font>";
-echo "</td><td bgcolor=\"#$cc\" width=\"99%\">\n";
+echo "</td><td width=\"99%\">\n";
 echo "Username: " . $_SESSION["usertable"]["username"] . " (site=".$_SESSION["usertable"]["usersitenumber"].")<br>\n";
 list($clockstr,$clocktype)=siteclock();
-echo "</td><td bgcolor=\"#$cc\" align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
+echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
 echo "</table>\n";
 
 $clar = DBOpenClarsInSites($_SESSION["usertable"]["contestnumber"], $s["sitejudging"]);
@@ -84,7 +80,7 @@ for ($i=0; $i<count($rrun); $i++) {
 $nr=count($run);
 $nc=count($clar);
 
-echo "<table border=0 width=\"100%\" align=center>\n";
+echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
 echo " <tr>\n";
 //echo "  <td align=center width=\"10%\"><a class=menu style=\"font-weight:bold\" href=problem.php>Problems</a></td>\n";
 

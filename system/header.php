@@ -43,16 +43,16 @@ if($_SESSION["usertable"]["usertype"] != "system") {
         ForceLoad("../index.php");
 }
 
-echo "</head><body><table border=1 width=\"100%\">\n";
-echo "<tr><td nowrap bgcolor=\"eeee00\" align=center>";
+echo "</head><body><table class=\"boca-banner boca-banner--system\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "<tr><td nowrap align=center>";
 echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
 echo "<font color=\"#000000\">BOCA</font>";
-echo "</td><td bgcolor=\"#eeee00\" width=\"99%\">\n";
+echo "</td><td width=\"99%\">\n";
 echo "Username: " . $_SESSION["usertable"]["username"] ."<br>\n";
 list($clockstr,$clocktype)=siteclock();
-echo "</td><td bgcolor=\"#eeee00\" align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
+echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
 echo "</table>\n";
-echo "<table border=0 width=\"100%\" align=center>\n";
+echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
 echo " <tr>\n";
 echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=contest.php>Contest</a></td>\n";
 //echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=importxml.php>Import</a></td>\n";
