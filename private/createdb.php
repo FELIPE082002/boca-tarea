@@ -52,9 +52,9 @@ $resp = strtoupper(trim(fgets(STDIN)));
 if($resp != 'YES') exit;
 
 echo "\ndropping database\n";
-DBDropDatabase();
+//DBDropDatabase();
 echo "creating database\n";
-DBCreateDatabase();
+//DBCreateDatabase();
 echo "creating tables\n";
 DBCreateContestTable();
 DBCreateSiteTable();
