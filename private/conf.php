@@ -6,16 +6,16 @@ $conf["dbclientenc"]="UTF8";
 $conf['doenc']=false;
 
 $conf["dblocal"]="false"; // use unix socket to connect?
-$conf["dbhost"]="localhost";
+$conf["dbhost"]="postgresql-boca.alwaysdata.net";
 $conf["dbport"]="5432";
 
- $conf["dbname"]="bocadb"; // name of the boca database
+ $conf["dbname"]="boca_db"; // name of the boca database
 
- $conf["dbuser"]="bocauser"; // unprivileged boca user
-$conf["dbpass"]="dAm0HAiC";
+ $conf["dbuser"]="boca_user"; // unprivileged boca user
+$conf["dbpass"]="Cardenas09@";
 
- $conf["dbsuperuser"]="bocauser"; // privileged boca user
-$conf["dbsuperpass"]="dAm0HAiC";
+ $conf["dbsuperuser"]="boca"; // privileged boca user
+$conf["dbsuperpass"]="Cardenas09@";
 
     // note that it is fine to use the same user
 
