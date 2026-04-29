@@ -380,7 +380,26 @@ $tt=time();
 // verifica se a sessao esta aberta e ok
 function ValidSession() {
   if (!isset($_SESSION["usertable"])) return(FALSE);
-  if($_SESSION["usertable"]["usersession"] != session_id()) return(FALSE);
+  $sid = session_id();
+  if (!isset($_SESSION["usertable"]["usersession"]) || $_SESSION["usertable"]["usersession"] != $sid) {
+	// Resync $_SESSION from DB if the server still has this PHP session (avoids false "expired" after tab/navigation quirks).
+	if (isset($_SESSION["usertable"]["contestnumber"], $_SESSION["usertable"]["usersitenumber"], $_SESSION["usertable"]["usernumber"])) {
+		$cn = (int)$_SESSION["usertable"]["contestnumber"];
+		$sn = (int)$_SESSION["usertable"]["usersitenumber"];
+		$un = (int)$_SESSION["usertable"]["usernumber"];
+		$row = DBGetRow("select usersession, userip from usertable where contestnumber=$cn and usersitenumber=$sn and usernumber=$un", 0, null, "ValidSession(resync)");
+		if ($row !== null && !empty($row["usersession"]) && (string)$row["usersession"] === (string)$sid) {
+			$_SESSION["usertable"]["usersession"] = $sid;
+			if (isset($row["userip"])) {
+				$_SESSION["usertable"]["userip"] = $row["userip"];
+			}
+		} else {
+			return(FALSE);
+		}
+	} else {
+		return(FALSE);
+	}
+  }
   $gip = getIP();
   //if(!ValidCookie()) return false;
 
@@ -394,7 +413,7 @@ function ValidSession() {
 	$tmp = DBUserInfo($_SESSION["usertable"]["contestnumber"], 
 					  $_SESSION["usertable"]["usersitenumber"], 
 					  $_SESSION["usertable"]["usernumber"]);
-	if($tmp['usersession']=='') return(FALSE);
+	if (empty($tmp["usersession"]) && $tmp["usersession"] !== "0") return(FALSE);
 	if($_SESSION["usertable"]["usermultilogin"] == 't') return(TRUE);
 
 	if ($tmp["userip"] != $gip) {

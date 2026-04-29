@@ -17,7 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 // modified 21/july/2012 by cassio@ime.usp.br
 ob_start();
-session_start();
+require_once(__DIR__ . '/private/boca_session.php');
+boca_session_start();
 require_once("globals.php");
 
 if(!ValidSession()) {

@@ -22,7 +22,8 @@ header ("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
-session_start();
+require_once(__DIR__ . '/../../private/boca_session.php');
+boca_session_start();
 $locr = $_SESSION['locr'];
 $loc = $_SESSION['loc'];
 

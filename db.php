@@ -16,6 +16,9 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 // Last modified 21/jul/2012 by cassio@ime.usp.br
+// PHP 8.1+: hide E_DEPRECATED from legacy BOCA (e.g. explode(null), pg_* deprecations).
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 if(isset($_SESSION["locr"]) && isset($_SESSION["loc"]) && !is_readable($_SESSION["locr"] . '/private/conf.php')) {
 	MSGError('Permission problems in ' . $_SESSION["locr"] . '/private/conf.php - the file must be readable to the user running the web server');
 	exit;
@@ -171,8 +174,11 @@ function DBConnect($forcenew=false) {
 			"Is it running? Is the DB password in conf.php correct?");
 		exit;
 	}
-	if(isset($conf["dbclientenc"]))
-		DBExecNonStop($conn,"SET NAMES '${conf["dbclientenc"]}'","set client encoding");
+	// PostgreSQL uses client_encoding; SET NAMES is MySQL-only and can error on PG.
+	if(isset($conf["dbclientenc"]) && $conf["dbclientenc"] !== "") {
+		$enc = str_replace("'", "''", $conf["dbclientenc"]);
+		DBExecNonStop($conn, "SET client_encoding TO '" . $enc . "'", "set client encoding");
+	}
 	return $conn;
 }
 //fecha a conexao com o banco (isso nao eh realmente necessario, ja que o php/apache cuidam do servico)

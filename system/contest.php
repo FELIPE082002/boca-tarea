@@ -33,7 +33,7 @@ else
   $contest=$_SESSION["usertable"]["contestnumber"];
 
 if(($ct = DBContestInfo($contest)) == null)
-	ForceLoad("../index.php");
+	ForceLoad("../index.php?logout=1");
 if ($ct["contestlocalsite"]==$ct["contestmainsite"]) $main=true; else $main=false;
 
 if (isset($_POST["Submit3"]) && isset($_POST["penalty"]) && is_numeric($_POST["penalty"]) && 
@@ -73,7 +73,7 @@ if (isset($_POST["Submit3"]) && isset($_POST["penalty"]) && is_numeric($_POST["p
 			else
 				MSGError("You must log in the new contest. The standard admin password is " . $cf["basepass"] . " (if not changed yet).");
 
-			ForceLoad("../index.php");
+			ForceLoad("../index.php?logout=1");
 		}
 	}
 	ForceLoad("contest.php?contest=".$_POST["contest"]);

@@ -23,7 +23,8 @@ header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 header ("Content-Type: text/html; charset=utf-8");
-session_start();
+require_once(__DIR__ . '/private/boca_session.php');
+boca_session_start();
 $_SESSION["loc"] = dirname($_SERVER['PHP_SELF']);
 if($_SESSION["loc"]=="/") $_SESSION["loc"] = "";
 $_SESSION["locr"] = dirname(__FILE__);
@@ -33,13 +34,18 @@ require_once("globals.php");
 require_once("db.php");
 
 if (!isset($_GET["name"])) {
+	// Do not wipe an active session just by opening the login URL (fixes false logouts with multiple tabs / bookmarks).
+	if (ValidSession() && !isset($_GET["logout"]) && !isset($_GET["login"])) {
+		header('Location: ' . $_SESSION["usertable"]["usertype"] . '/index.php');
+		exit;
+	}
 	if (ValidSession())
 	  DBLogOut($_SESSION["usertable"]["contestnumber"], 
 		   $_SESSION["usertable"]["usersitenumber"], $_SESSION["usertable"]["usernumber"],
 		   $_SESSION["usertable"]["username"]=='admin');
 	session_unset();
 	session_destroy();
-	session_start();
+	boca_session_start();
 	$_SESSION["loc"] = dirname($_SERVER['PHP_SELF']);
 	if($_SESSION["loc"]=="/") $_SESSION["loc"] = "";
 	$_SESSION["locr"] = dirname(__FILE__);
@@ -64,17 +70,19 @@ if(count($coo) != 2)
 
 ob_end_flush();
 
-require_once('version.php');
+require_once(__DIR__ . '/versionnum.php');
+require_once(__DIR__ . '/private/boca_tailwind.php');
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html class="dark" lang="es">
 <head>
-<title>BOCA Online Contest Administrator <?php echo $BOCAVERSION; ?> - Login</title>
+<meta charset="utf-8"/>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel=stylesheet href="Css.php" type="text/css">
-<script language="JavaScript" src="sha256.js"></script>
+<title>BOCA <?php echo htmlspecialchars($BOCAVERSION); ?> — Login</title>
+<?php boca_tailwind_print_head_assets(); ?>
+<script src="sha256.js"></script>
 <script language="JavaScript">
 function computeHASH()
 {
@@ -122,30 +130,46 @@ if(function_exists("globalconf") && function_exists("sanitizeVariables")) {
 }
 ?>
 </head>
-<body class="boca-login" onload="document.form1.name.focus()">
-<div class="boca-login-wrap">
-      <form name="form1" action="javascript:computeHASH()">
-        <div class="boca-login-card">
-                <h1>BOCA Login</h1>
-                <p class="boca-login-sub">Online Contest Administrator</p>
-                <table border="0" align="center" cellpadding="0" cellspacing="0">
-                  <tr> 
-                    <td><label for="boca-user">Name</label></td>
-                    <td> 
-                      <input id="boca-user" type="text" name="name" autocomplete="username">
-                    </td>
-                  </tr>
-                  <tr> 
-                    <td><label for="boca-pass">Password</label></td>
-                    <td> 
-                      <input id="boca-pass" type="password" name="password" autocomplete="current-password">
-                    </td>
-                  </tr>
-                </table>
-                <div class="boca-login-actions">
-                <input type="submit" name="Submit" value="Login">
-                </div>
-        </div>
-      </form>
+<body class="min-h-screen flex flex-col items-center justify-center tonal-layering-bg selection:bg-primary selection:text-on-primary text-on-background font-body" onload="document.form1.name.focus()">
+<main class="w-full max-w-md px-6 py-12 relative z-10">
+<div class="mb-10 text-center">
+  <div class="inline-flex items-center justify-center mb-5">
+    <div class="w-12 h-12 bg-primary-container rounded-xl flex items-center justify-center shadow-lg shadow-black/30">
+      <img src="images/smallballoontransp.png" alt="" class="h-7 w-7 opacity-90"/>
+    </div>
+  </div>
+  <h1 class="text-3xl font-black tracking-tighter text-on-background mb-1">BOCA</h1>
+  <p class="text-xs font-semibold uppercase tracking-widest text-on-surface-variant"><?php echo htmlspecialchars($BOCAVERSION); ?> — Online Contest Administrator</p>
 </div>
-<?php include('footnote.php'); ?>
+<div class="glass-panel border border-outline-variant/20 rounded-xl p-8 shadow-2xl shadow-black/40">
+  <div class="mb-6">
+    <h2 class="text-lg font-bold text-on-surface">Login</h2>
+    <div class="h-1 w-8 bg-primary mt-2 rounded-full"></div>
+  </div>
+  <form name="form1" action="javascript:computeHASH()" class="space-y-5">
+    <div class="space-y-2">
+      <label class="block text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant" for="boca-user">Name</label>
+      <input class="w-full bg-surface-container-low border-0 text-on-surface rounded-lg py-3 px-4 focus:ring-1 focus:ring-primary placeholder:text-outline/40 transition-all" id="boca-user" type="text" name="name" autocomplete="username" placeholder="username"/>
+    </div>
+    <div class="space-y-2">
+      <label class="block text-[0.6875rem] font-bold uppercase tracking-widest text-on-surface-variant" for="boca-pass">Password</label>
+      <input class="w-full bg-surface-container-low border-0 text-on-surface rounded-lg py-3 px-4 focus:ring-1 focus:ring-primary placeholder:text-outline/40 transition-all" id="boca-pass" type="password" name="password" autocomplete="current-password" placeholder="••••••••"/>
+    </div>
+    <button class="primary-gradient w-full py-3.5 rounded-lg font-bold text-on-primary shadow-lg shadow-primary/10 hover:opacity-95 transition-all active:scale-[0.99] mt-2 flex items-center justify-center gap-2 boca-btn-plain" type="submit" name="Submit">
+      Sign in
+      <span class="material-symbols-outlined text-lg">login</span>
+    </button>
+  </form>
+</div>
+<?php
+echo '<div class="mt-10 text-center text-[0.65rem] font-semibold uppercase tracking-wider text-on-secondary-fixed-variant opacity-80">';
+echo 'Powered by BOCA ' . htmlspecialchars($BOCAVERSION) . ' · © 2003–' . htmlspecialchars($YEAR) . ' BOCA System';
+echo '</div>';
+?>
+</main>
+<div class="fixed top-0 left-0 w-full h-full pointer-events-none overflow-hidden -z-10" aria-hidden="true">
+  <div class="absolute -top-[20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-surface-container-highest/20 blur-[120px]"></div>
+  <div class="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-primary-container/10 blur-[100px]"></div>
+</div>
+</body>
+</html>

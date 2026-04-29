@@ -23,73 +23,90 @@ header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 header ("Content-Type: text/html; charset=utf-8");
-session_start();
-if(!isset($_POST['noflush']))
+require_once(__DIR__ . '/../private/boca_session.php');
+boca_session_start();
+if (!isset($_POST['noflush'])) {
 	ob_end_flush();
-//$loc = $_SESSION['loc'];
-//$locr = $_SESSION['locr'];
+}
 $loc = $locr = "..";
 $runphp = "run.php";
 $runeditphp = "runedit.php";
 
 require_once("$locr/globals.php");
 require_once("$locr/db.php");
+require_once("$locr/private/boca_tailwind.php");
+require_once("$locr/versionnum.php");
 
-if(!isset($_POST['noflush'])) {
-	require_once("$locr/version.php");
-	echo "<html><head><title>Admin's Page</title>\n";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-	echo "<link rel=stylesheet href=\"$loc/Css.php\" type=\"text/css\">\n";
-}
-
-if(!ValidSession()) {
+if (!ValidSession()) {
 	InvalidSession("admin/index.php");
-        ForceLoad("$loc/index.php");
+	ForceLoad("$loc/index.php");
 }
-if($_SESSION["usertable"]["usertype"] != "admin") {
+if ($_SESSION["usertable"]["usertype"] != "admin") {
 	IntrusionNotify("admin/index.php");
 	ForceLoad("$loc/index.php");
 }
 
+if (!isset($_POST['noflush'])) {
+	list($clockstr, $clocktype) = siteclock();
+	$self = basename($_SERVER['SCRIPT_NAME'] ?? '');
+	$sn = $_SERVER['SCRIPT_NAME'] ?? '';
+	$inReport = (strpos($sn, '/report/') !== false);
+	$runAct = in_array($self, ['run.php', 'runedit.php'], true);
+	$clarAct = in_array($self, ['clar.php', 'claredit.php'], true);
+	?>
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BOCA — Admin<?php echo isset($BOCAVERSION) ? ' ' . htmlspecialchars($BOCAVERSION) : ''; ?></title>
+<?php
 if ((isset($_GET["Submit1"]) && $_GET["Submit1"] == "Transfer") ||
     (isset($_GET["Submit3"]) && $_GET["Submit3"] == "Transfer scores")) {
-  echo "<meta http-equiv=\"refresh\" content=\"60\" />";
+	echo "<meta http-equiv=\"refresh\" content=\"60\" />\n";
 }
-
-if(!isset($_POST['noflush'])) {
-	echo "</head><body id=\"body\"><table class=\"boca-banner boca-banner--admin\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-	echo "<tr><td nowrap align=center>";
-	echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
-	echo "<font color=\"#000000\">BOCA</font>";
-	echo "</td><td width=\"99%\">\n";
-	echo "Username: " . $_SESSION["usertable"]["username"] . " (site=".$_SESSION["usertable"]["usersitenumber"].")<br>\n";
-	list($clockstr,$clocktype)=siteclock();
-	echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
-	echo "</table>\n";
-	echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
-	echo " <tr>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=run.php>Runs</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=score.php>Score</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=clar.php>Clarifications</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=user.php>Users</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=problem.php>Problems</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=language.php>Languages</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=answer.php>Answers</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=misc.php>Misc</a></td>\n";
-//echo " </tr></table><hr><table border=0 width=\"100%\" align=center><tr>\n";
-	echo " </tr><tr>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=task.php>Tasks</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=site.php>Site</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=contest.php>Contest</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=log.php>Logs</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=report.php>Reports</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=files.php>Backups</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=option.php>Options</a></td>\n";
-	echo "  <td align=center><a class=menu style=\"font-weight:bold\" href=$loc/index.php>Logout</a></td>\n";
-	echo " </tr>\n"; 
-	echo "</table>\n";
+boca_tailwind_print_head_assets();
+?>
+</head>
+<body id="body" class="boca-app-ui bg-surface font-body text-on-background min-h-screen selection:bg-primary selection:text-on-primary pt-[7.25rem] md:pt-24 px-3 md:px-8 pb-10">
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant/30 bg-[#060e20]/95 backdrop-blur-md shadow-lg shadow-black/20">
+  <div class="flex h-14 items-center justify-between gap-3 px-4 md:px-6">
+    <div class="flex min-w-0 items-center gap-3">
+      <img src="../images/smallballoontransp.png" alt="" class="h-8 w-8 shrink-0 opacity-90"/>
+      <div class="min-w-0">
+        <div class="truncate text-sm font-black tracking-tight text-on-surface md:text-base">BOCA</div>
+        <div class="truncate text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Admin</div>
+      </div>
+    </div>
+    <div class="text-center text-[10px] font-semibold uppercase tracking-wide text-primary md:text-sm">
+      <?php echo htmlspecialchars($clockstr); ?>
+    </div>
+    <div class="flex max-w-[55%] flex-col items-end text-right md:max-w-none">
+      <span class="truncate text-xs font-semibold text-on-surface md:text-sm"><?php echo htmlspecialchars($_SESSION["usertable"]["username"]); ?></span>
+      <span class="text-[10px] uppercase tracking-wider text-on-surface-variant">site <?php echo (int)$_SESSION["usertable"]["usersitenumber"]; ?></span>
+    </div>
+  </div>
+  <nav class="flex flex-wrap items-center gap-1 border-t border-outline-variant/25 bg-[#0b1426]/95 px-2 py-2 md:gap-2 md:px-4">
+<?php
+boca_tailwind_nav_pill('run.php', 'Runs', $runAct);
+boca_tailwind_nav_pill('score.php', 'Score', $self === 'score.php');
+boca_tailwind_nav_pill('clar.php', 'Clarifications', $clarAct);
+boca_tailwind_nav_pill('user.php', 'Users', $self === 'user.php');
+boca_tailwind_nav_pill('problem.php', 'Problems', $self === 'problem.php');
+boca_tailwind_nav_pill('language.php', 'Languages', $self === 'language.php');
+boca_tailwind_nav_pill('answer.php', 'Answers', $self === 'answer.php');
+boca_tailwind_nav_pill('misc.php', 'Misc', $self === 'misc.php');
+boca_tailwind_nav_pill('task.php', 'Tasks', $self === 'task.php');
+boca_tailwind_nav_pill('site.php', 'Site', $self === 'site.php');
+boca_tailwind_nav_pill('contest.php', 'Contest', $self === 'contest.php');
+boca_tailwind_nav_pill('log.php', 'Logs', $self === 'log.php');
+boca_tailwind_nav_pill('report.php', 'Reports', $self === 'report.php' || $inReport);
+boca_tailwind_nav_pill('files.php', 'Backups', $self === 'files.php');
+boca_tailwind_nav_pill('option.php', 'Options', $self === 'option.php');
+boca_tailwind_nav_pill($loc . '/index.php?logout=1', 'Logout', false);
+?>
+  </nav>
+</header>
+<?php
 }
-
-//if(decryptData(encryptData("aaaaa","senha"),"senha")) MSGError("yay");
-
 ?>

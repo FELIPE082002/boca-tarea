@@ -22,60 +22,65 @@ header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 header ("Content-Type: text/html; charset=utf-8");
-session_start();
+require_once(__DIR__ . '/../private/boca_session.php');
+boca_session_start();
 ob_end_flush();
-require_once('../version.php');
-
+require_once(__DIR__ . '/../versionnum.php');
 require_once("../globals.php");
 require_once("../db.php");
+require_once(__DIR__ . '/../private/boca_tailwind.php');
 
-echo "<html><head><title>Staff's Page</title>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-echo "<link rel=stylesheet href=\"../Css.php\" type=\"text/css\">\n";
-
-//echo "<meta http-equiv=\"refresh\" content=\"60\" />"; 
-
-if(!ValidSession()) {
+if (!ValidSession()) {
 	InvalidSession("staff/index.php");
-        ForceLoad("../index.php");
+	ForceLoad("../index.php");
 }
-if($_SESSION["usertable"]["usertype"] != "staff"
+if ($_SESSION["usertable"]["usertype"] != "staff"
   && $_SESSION["usertable"]["usertype"] != "admin") {
 	IntrusionNotify("staff/index.php");
-        ForceLoad("../index.php");
+	ForceLoad("../index.php");
 }
 
-echo "<script language=\"javascript\" src=\"../reload.js\"></script>\n";
-echo "</head><body onload=\"Comecar()\" onunload=\"Parar()\"><table class=\"boca-banner boca-banner--staff\" width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "<tr><td nowrap align=center>";
-echo "<img src=\"../images/smallballoontransp.png\" alt=\"\">";
-echo "<font color=\"#000000\">BOCA</font>";
-echo "</td><td width=\"99%\">\n";
-echo "Username: " . $_SESSION["usertable"]["username"] . " (site=".$_SESSION["usertable"]["usersitenumber"].")<br>\n";
-list($clockstr,$clocktype)=siteclock();
-echo "</td><td align=center nowrap>&nbsp;".$clockstr."&nbsp;</td></tr>\n";
-echo "</table>\n";
+if (($s = DBSiteInfo($_SESSION["usertable"]["contestnumber"], $_SESSION["usertable"]["usersitenumber"])) == null) {
+	ForceLoad("../index.php");
+}
 
-if(($s = DBSiteInfo($_SESSION["usertable"]["contestnumber"], $_SESSION["usertable"]["usersitenumber"])) == null)
-        ForceLoad("../index.php");
-
-//$task = DBOpenTasksInSites($_SESSION["usertable"]["contestnumber"], $s["sitetasking"]);
-//$nr=count($task);
-
-echo "<table class=\"boca-nav\" border=0 width=\"100%\" align=center>\n";
-echo " <tr>\n";
-echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=task.php>Tasks</a></td>\n";
-//echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=task.php>Tasks ($nr)</a></td>\n";
-echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=score.php>Score</a></td>\n";
-echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=run.php>Runs</a></td>\n";
-
-//echo " <td align=center width=\"20%\"><a href=\"#\" class=menu style=\"font-weight:bold\" onClick=\"window.open('report/stat.php', ".
-//                "'Problem Statistics','width=800,height=600,scrollbars=yes,toolbar=yes,menubar=yes,".
-//                "resizable=yes')\">Statistics</a></td>\n";
-
-//echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=option.php>Options</a></td>\n";
-echo "  <td align=center width=\"20%\"><a class=menu style=\"font-weight:bold\" href=../index.php>Logout</a></td>\n";
-echo " </tr>\n"; 
-echo "</table>\n";
+list($clockstr, $clocktype) = siteclock();
+$self = basename($_SERVER['SCRIPT_NAME'] ?? '');
+$runAct = in_array($self, ['run.php'], true);
 ?>
-
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>BOCA — Staff<?php echo isset($BOCAVERSION) ? ' ' . htmlspecialchars($BOCAVERSION) : ''; ?></title>
+<?php boca_tailwind_print_head_assets(); ?>
+<script src="../reload.js"></script>
+</head>
+<body class="boca-app-ui bg-surface font-body text-on-background min-h-screen selection:bg-primary selection:text-on-primary pt-[7.25rem] md:pt-24 px-3 md:px-8 pb-10" onload="Comecar()" onunload="Parar()">
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant/30 bg-[#060e20]/95 backdrop-blur-md shadow-lg shadow-black/20">
+  <div class="flex h-14 items-center justify-between gap-3 px-4 md:px-6">
+    <div class="flex min-w-0 items-center gap-3">
+      <img src="../images/smallballoontransp.png" alt="" class="h-8 w-8 shrink-0 opacity-90"/>
+      <div class="min-w-0">
+        <div class="truncate text-sm font-black tracking-tight text-on-surface md:text-base">BOCA</div>
+        <div class="truncate text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">Staff</div>
+      </div>
+    </div>
+    <div class="text-center text-[10px] font-semibold uppercase tracking-wide text-primary md:text-sm">
+      <?php echo htmlspecialchars($clockstr); ?>
+    </div>
+    <div class="flex max-w-[55%] flex-col items-end text-right md:max-w-none">
+      <span class="truncate text-xs font-semibold text-on-surface md:text-sm"><?php echo htmlspecialchars($_SESSION["usertable"]["username"]); ?></span>
+      <span class="text-[10px] uppercase tracking-wider text-on-surface-variant">site <?php echo (int)$_SESSION["usertable"]["usersitenumber"]; ?></span>
+    </div>
+  </div>
+  <nav class="flex flex-wrap items-center gap-1 border-t border-outline-variant/25 bg-[#0b1426]/95 px-2 py-2 md:gap-2 md:px-4">
+<?php
+boca_tailwind_nav_pill('task.php', 'Tasks', $self === 'task.php');
+boca_tailwind_nav_pill('score.php', 'Score', $self === 'score.php');
+boca_tailwind_nav_pill('run.php', 'Runs', $runAct);
+boca_tailwind_nav_pill('../index.php?logout=1', 'Logout', false);
+?>
+  </nav>
+</header>

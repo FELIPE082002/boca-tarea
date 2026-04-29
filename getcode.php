@@ -1,16 +1,17 @@
 <?php
 ob_start();
+require_once(__DIR__ . '/private/boca_session.php');
 require_once('globals.php');
 header ("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header ("Cache-Control: no-cache, must-revalidate");
 header ("Pragma: no-cache");
 header ("Content-Type: text/html; charset=utf-8");
-session_start();
+boca_session_start();
 if (!isset($_GET["name"])) {
   session_unset();
   session_destroy();
-  session_start();
+  boca_session_start();
   echo session_id();
   exit;
 }

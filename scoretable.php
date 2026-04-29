@@ -16,6 +16,7 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 //Last updated 24/oct/2017 by cassio@ime.usp.br
+require_once(__DIR__ . '/private/boca_session.php');
 require_once("db.php");
 
 if(isset($_SESSION["locr"]))
@@ -30,7 +31,7 @@ if(isset($_GET["clock"]) && $_GET["clock"]==1) {
 	header ("Cache-Control: no-cache, must-revalidate");
 	header ("Pragma: no-cache");
 	header ("Content-Type: text/html; charset=utf-8");
-	session_start();
+	boca_session_start();
 	ob_end_flush();
 
 	if(!isset($contest) || !isset($localsite)) {
@@ -54,7 +55,7 @@ if(isset($_GET['remote'])) {
 	header ("Cache-Control: no-cache, must-revalidate");
 	header ("Pragma: no-cache");
 	header ("Content-Type: text/html; charset=utf-8");
-	session_start();
+	boca_session_start();
 	ob_end_flush();
 
 	if (isset($_SESSION["usertable"])) {
